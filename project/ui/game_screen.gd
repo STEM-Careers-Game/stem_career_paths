@@ -6,6 +6,8 @@ extends Control
 signal _option_selected(option: String)
 signal tapped_anywhere
 
+const EPILOGUE_CONTROL := preload("res://ui/epilogue/epilogue_phase_control.tscn")
+
 var world : World:
 	set(value):
 		world = value
@@ -65,28 +67,32 @@ func finish_game() -> void:
 			});
 		""")
 	
-	var ending_control := preload("res://ui/game_over_control.tscn").instantiate()
-	var ending_factory := preload("res://end/ending_factory.gd").new()
-	var ending := ending_factory.make_ending_story(world)
-	ending_control.major = ending.major
-	ending_control.text = ending.text
-	
 	await _scenario_container.clear()
 	
-	_clear(_top_container)
 	# Simply hiding the year indicator is not a great UI. Animating
 	# between states might be better, but as of this writing, we don't
 	# have a clear design for how it should go away.
 	_year_indicator.visible = false
-	_top_container.add_child(ending_control)
+	
+	var generator := preload("res://end/epilogue_text_generator.gd").new()
+	var epilogue := Epilogue.create_for(world.character)
+	
+	if epilogue.community_college:
+		var community_college := EPILOGUE_CONTROL.instantiate()
+		var community_college_text := generator.generate_community_college_text(epilogue)
+		_replace_top_container_content_with(community_college)
+		await community_college.play(self, community_college_text)
+	
+	var summary := preload("res://ui/epilogue/epilogue_summary.tscn").instantiate()
+	summary.epilogue = epilogue
+	_replace_top_container_content_with(summary)
 
-	# Wait for the animation to finish before showing the options.
-	ending_control.play()
-	await ending_control.animation_finished
+	await show_options(["I'm Done!"])
 
-	# Right now, there's only one option, so when it's chosen, move on.
-	# This will have to be more robust later.
-	await show_options(["Play Again"])
+
+func _replace_top_container_content_with(control:Control) -> void:
+	_clear(_top_container)
+	_top_container.add_child(control)
 
 
 ## Show the player the effects of their decision.
