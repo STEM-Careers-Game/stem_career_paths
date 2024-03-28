@@ -10,7 +10,7 @@ enum InstitutionType {
 
 var character : Character
 
-var gap_year := false
+var gap_year := true
 
 var community_college := true
 

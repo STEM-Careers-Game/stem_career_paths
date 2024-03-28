@@ -77,6 +77,12 @@ func finish_game() -> void:
 	var generator := preload("res://end/epilogue_text_generator.gd").new()
 	var epilogue := Epilogue.create_for(world.character)
 	
+	if epilogue.gap_year:
+		var gap_year := EPILOGUE_CONTROL.instantiate()
+		var gap_year_text := generator.generate_gap_year_text(epilogue)
+		_replace_top_container_content_with(gap_year)
+		await gap_year.play(self, gap_year_text)
+	
 	if epilogue.community_college:
 		var community_college := EPILOGUE_CONTROL.instantiate()
 		var community_college_text := generator.generate_community_college_text(epilogue)
