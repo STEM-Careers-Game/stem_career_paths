@@ -14,10 +14,6 @@ var world : World:
 		%CharacterDisplay.character = world.character
 		%YearIndicator.set_year(world.year)
 
-## This box holds the whole top interaction area. It is the container
-## whose content is swapped out by the ending screen at the end of
-## the game, which allows the bottom to stay in place.
-@onready var _top_container := %TopContainer
 @onready var _option_area := %OptionArea
 @onready var _story_label : AnimatedLabel = %StoryLabel
 @onready var _year_indicator := %YearIndicator
@@ -80,25 +76,20 @@ func finish_game() -> void:
 	if epilogue.gap_year:
 		var gap_year := EPILOGUE_CONTROL.instantiate()
 		var gap_year_text := generator.generate_gap_year_text(epilogue)
-		_replace_top_container_content_with(gap_year)
+		_scenario_container.show_control(gap_year)
 		await gap_year.play(self, gap_year_text)
 	
 	if epilogue.community_college:
 		var community_college := EPILOGUE_CONTROL.instantiate()
 		var community_college_text := generator.generate_community_college_text(epilogue)
-		_replace_top_container_content_with(community_college)
+		_scenario_container.show_control(community_college)
 		await community_college.play(self, community_college_text)
 	
 	var summary := preload("res://ui/epilogue/epilogue_summary.tscn").instantiate()
 	summary.epilogue = epilogue
-	_replace_top_container_content_with(summary)
+	_scenario_container.show_control(summary)
 
 	await show_options(["I'm Done!"])
-
-
-func _replace_top_container_content_with(control:Control) -> void:
-	_clear(_top_container)
-	_top_container.add_child(control)
 
 
 ## Show the player the effects of their decision.
