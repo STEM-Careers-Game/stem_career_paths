@@ -84,6 +84,11 @@ func finish_game() -> void:
 		var community_college_text := generator.generate_community_college_text(epilogue)
 		_scenario_container.show_control(community_college)
 		await community_college.play(self, community_college_text)
+		
+	var university := EPILOGUE_CONTROL.instantiate()
+	var university_text := generator.generate_university_text(epilogue)
+	_scenario_container.show_control(university)
+	await university.play(self, university_text)
 	
 	var summary := preload("res://ui/epilogue/epilogue_summary.tscn").instantiate()
 	summary.epilogue = epilogue

@@ -15,6 +15,12 @@ func generate_community_college_text(_epilogue:Epilogue) -> Array[EpilogueText]:
 		_p("so that you can learn independence, practice college-level study skills, and save tuition money.")
 	]
 
+func generate_university_text(epilogue:Epilogue) -> Array[EpilogueText]:
+	return [
+		_p("You enroll at a"),
+		_h(Epilogue.as_string(epilogue.college_type))
+	]
+	
 
 # "p" as in "paragraph" from HTML.
 func _p(s:String) -> EpilogueText:
