@@ -10,6 +10,36 @@ const GAP_YEAR_CHANCE := 0.15
 ## This is computed by the ratio reported by NCES in 2019.
 const COMMUNITY_COLLEGE_PROBABILITY := 0.22/0.66
 
+const MAJORS_BY_ATTRIBUTE := {
+	"science": [
+		"astronomy",
+		"biology",
+		"chemistry",
+		"computer science",
+		"geology",
+		"physics",
+		"psychology",
+	],
+	"technology": [
+		"computer networking",
+		"cybersecurity",
+		"information systems",
+		"information technology",
+	],
+	"engineering": [
+		"civil engineering",
+		"chemical engineering",
+		"computer engineering",
+		"electrical engineering",
+		"mechanical engineering",
+	],
+	"mathematics": [
+		"data science",
+		"mathematics",
+		"statistics",
+	],
+}
+
 enum InstitutionType {
 	PRIVATE_LIBERAL_ARTS,
 	PRIVATE_ENGINEERING,
@@ -25,6 +55,9 @@ var gap_year := false
 var community_college := false
 
 var college_type : InstitutionType = InstitutionType.MEDIUM_PUBLIC
+
+var majors : Array[String] = []
+var minors : Array[String] = []
 
 
 func _init(character_p:Character) -> void:
@@ -45,20 +78,30 @@ static func create_for(character:Character) -> Epilogue:
 	# Even chance of the institution types. This can be improved later as desired.
 	epilogue.college_type = InstitutionType.keys().pick_random()
 	
+	epilogue.majors.append(_pick_major(character))
+	
 	return epilogue
+
+
+static func _pick_major(character: Character) -> String:
+	var keys: Array[String] = []
+	keys.assign(MAJORS_BY_ATTRIBUTE.keys())
+	var highest_attribute_name: String = \
+		character.get_highest_attribute_names(keys).pick_random()
+	return MAJORS_BY_ATTRIBUTE[highest_attribute_name].pick_random() as String
 
 
 static func as_string(type:InstitutionType) -> String:
 	match type:
 		InstitutionType.PRIVATE_LIBERAL_ARTS: 
-			return "private liberal arts college"
+			return "Private Liberal Arts College"
 		InstitutionType.PRIVATE_ENGINEERING:
-			return "private engineering college"
+			return "Private Engineering College"
 		InstitutionType.SMALL_PUBLIC:
-			return "small public college"
+			return "Small Public College"
 		InstitutionType.MEDIUM_PUBLIC:
-			return "mid-sized public university"
+			return "Mid-Sized Public University"
 		InstitutionType.LARGE_PUBLIC:
-			return "large public university"
+			return "Large Public University"
 	assert(false, "Unreachable code if the match is working above.")
 	return ""

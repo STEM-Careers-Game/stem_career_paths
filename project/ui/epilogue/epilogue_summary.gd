@@ -16,5 +16,15 @@ func _ready() -> void:
 		add_child(label)
 
 	var college_label := Label.new()
-	college_label.text = "Attended %s" % Epilogue.as_string(epilogue.college_type).to_pascal_case()
+	college_label.text = "Attended %s" % Epilogue.as_string(epilogue.college_type)
 	add_child(college_label)
+
+	for major in epilogue.majors:
+		var label := Label.new()
+		label.text = "Major: %s" % major
+		add_child(label)
+	
+	for minor in epilogue.minors:
+		var label := Label.new()
+		label.text = "Minor: %s" % minor
+		add_child(label)

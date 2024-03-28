@@ -18,7 +18,9 @@ func generate_community_college_text(_epilogue:Epilogue) -> Array[EpilogueText]:
 func generate_university_text(epilogue:Epilogue) -> Array[EpilogueText]:
 	return [
 		_p("You enroll at a"),
-		_h(Epilogue.as_string(epilogue.college_type))
+		_h(Epilogue.as_string(epilogue.college_type)),
+		_p("and major in"),
+		_h(epilogue.majors[0]),
 	]
 	
 
